@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+
+require 'colorize'
+require_relative 'octaknots/kingcrab'
+
+crabs = Kingcrab.new()
+
+puts "==[ King Crab : Counts ]==".colorize(:green)
+puts ""
+crabs.print_totals()
+puts ""
+

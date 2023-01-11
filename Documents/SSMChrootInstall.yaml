@@ -1,0 +1,32 @@
+---
+schemaVersion: '2.2'
+description: 'aws:runShellScript'
+
+mainSteps:
+  - action: 'aws:runShellScript'
+    name: 'SSMChrootInstall'
+    inputs:
+      runCommand:
+        - "mkdir -p /mnt/xvdf"
+        - "mount /dev/xvdf1 /mnt/xvdf"
+        - "mount -v -t proc none /mnt/xvdf/proc"
+        - "mount -v -o bind /sys /mnt/xvdf/sys"
+        - "mount -v -o bind /dev /mnt/xvdf/dev"
+        - "cd /mnt/xvdf"
+        - "wget --quiet 'https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/debian_amd64/amazon-ssm-agent.deb'"
+        - "cd /"
+        - "echo '#!/bin/bash' > /mnt/xvdf/install.sh"
+        - "echo 'if [ -e /usr/bin/dpkg ]; then' >> /mnt/xvdf/install.sh"
+        - "echo 'export PATH=/sbin:/bin:$PATH' >> /mnt/xvdf/install.sh"
+        - "echo 'hash -r' >> /mnt/xvdf/install.sh"
+        - "echo 'echo $PATH ' >> /mnt/xvdf/install.sh"
+        - "echo '/usr/bin/dpkg -i /amazon-ssm-agent.deb' >> /mnt/xvdf/install.sh"
+        - "echo 'systemctl enable amazon-ssm-agent' >> /mnt/xvdf/install.sh"
+        - "echo 'else' >> /mnt/xvdf/install.sh"
+        - "echo 'yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm' >> /mnt/xvdf/install.sh"
+        - "echo 'systemctl enable amazon-ssm-agent' >> /mnt/xvdf/install.sh"
+        - "echo 'fi' >> /mnt/xvdf/install.sh"
+        - "chmod +x /mnt/xvdf/install.sh"
+        - "chroot /mnt/xvdf /install.sh"
+        - "umount /mnt/xvdf/proc /mnt/xvdf/sys /mnt/xvdf/dev"
+        - "umount /mnt/xvdf"

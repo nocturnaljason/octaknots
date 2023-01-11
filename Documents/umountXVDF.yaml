@@ -1,0 +1,11 @@
+---
+schemaVersion: '2.2'
+description: 'aws:runShellScript'
+
+mainSteps:
+  - action: 'aws:runShellScript'
+    name: 'umountXVDF'
+    inputs:
+      runCommand:
+        - "umount /mnt/xvdf/proc /mnt/xvdf/sys /mnt/xvdf/dev"
+        - "umount /mnt/xvdf"

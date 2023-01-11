@@ -1,0 +1,44 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'cmdparse'
+require_relative 'lib/snapper.rb'
+
+snapper = Snapper.new
+
+parser = CmdParse::CommandParser.new(handle_exceptions: :no_help)
+parser.main_options.program_name = File.basename($PROGRAM_NAME)
+parser.main_options.version = "1.0.0"
+parser.main_options.banner = "Security tool for AWS instances"
+
+parser.global_options do |opt|
+  opt.on('-pPROFILE','--profile=PROFILE', 'Use AWS profile') do |profile|
+    parser.data[:profile]=profile
+  end
+
+  opt.on('-rREGION','--region=REGIOM', 'Use AWS region') do |region|
+    parser.data[:region]=region
+  end
+
+  opt.on('-d','--debug', 'Turn on debugging') do |debug|
+    parser.data[:debug]=debug
+  end
+
+end
+
+all = CmdParse::Command.new('all')
+all.takes_commands(false)
+all.short_desc = "Run all snapper systems (default)"
+all.action do
+  parser.data[:mode] = 'all'
+end
+
+parser.add_command(CmdParse::HelpCommand.new)
+parser.add_command(CmdParse::VersionCommand.new)
+parser.add_command(all, default: true)
+
+parser.parse
+
+snapper.arguments(parser.data)
+
+snapper.execute(parser.data[:mode])

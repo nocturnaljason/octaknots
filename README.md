@@ -1,2 +1,8 @@
-# octaknots
-Set of scripts to enable SSM without SSH, Use SSM to update the OS, and verify Orca alerts for an AWS EC2 instance
+# README #
+
+This repository is for OctaKnots a security tool to automate compliance with security standards.
+
+### Setup your environment ###
+      bundle config set --local path 'vendor/bundle'
+      bundle install
+

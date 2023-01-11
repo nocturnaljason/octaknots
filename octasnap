@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+
+#require 'aws-sdk'
+require_relative 'octaknots/snap'
+require_relative 'octaknots/parser'
+
+snap = Octaknots::Snap.new
+snap.start()
